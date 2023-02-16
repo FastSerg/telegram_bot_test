@@ -32,6 +32,14 @@ const againOptions = {
   })
 }
 
+const startAppOptions = {
+  reply_markup: {
+    inline_keyboard: [[
+      { text: 'start_app', web_app: { url: 'https://queue-magazines.d3dwx51p7ryi1a.amplifyapp.com/' } }
+    ],]
+  }
+}
+
 const startGame = async (chatId) => {
   await bot.sendMessage(chatId, `Зараз я загадаю число від 1 до 9, а ти повинен відгадати`)
   const randomNum = Math.floor(Math.random() * 10)
@@ -42,12 +50,14 @@ const startGame = async (chatId) => {
 const start = () => {
   bot.setMyCommands([
     { command: '/start', description: 'Вітання з юзером' },
+    { command: '/app', description: 'Start app' },
     { command: '/info', description: 'Інформація про юзера' },
     { command: '/game', description: 'Start game' },
     { command: '/again', description: 'Restart game' },
   ])
 
   bot.on('message', async (msg) => {
+
     const text = msg.text
     const chatId = msg.chat.id
     const name = msg.from.username
@@ -57,30 +67,38 @@ const start = () => {
       return bot.sendMessage(chatId, `Hello you registration on bot`)
     }
 
+    if (text === '/app') {
+      await bot.sendSticker(chatId, 'https://stickerswiki.ams3.cdn.digitaloceanspaces.com/Minions_StickerPack_By_Shanu_S/2162617.160.gif')
+      return bot.sendMessage(chatId, `Start app from bot`, startAppOptions)
+    }
+
     if (text === '/info') {
       return bot.sendMessage(chatId, `Hello ${name} you registration on bot`)
     }
 
     if (text === '/game') {
-      startGame(chatId)
+      return startGame(chatId)
     }
 
 
     return bot.sendMessage(chatId, `I dont understand you`)
   })
 
-  bot.on('callback_query', (msg) => {
+  bot.on('callback_query', async (msg) => {
     const chatId = msg.message.chat.id
     const data = msg.data
     if (data === '/again') {
       return startGame(chatId)
     }
     if (data == chats[chatId]) {
+
+      await bot.sendSticker(chatId, 'https://tlgrm.eu/_/stickers/8f3/e69/8f3e69d4-f653-3c00-baab-1883777e3355/192/5.webp')
       return bot.sendMessage(chatId, `Вітаю ти відгадав число ${chats[chatId]}`, againOptions)
     } else {
+      await bot.sendSticker(chatId, 'https://tlgrm.ru/_/stickers/8f3/e69/8f3e69d4-f653-3c00-baab-1883777e3355/192/39.webp')
       return bot.sendMessage(chatId, `На жаль ти не вгадав число ${chats[chatId]}`, againOptions)
     }
   })
 }
 
-start()
+start() 
