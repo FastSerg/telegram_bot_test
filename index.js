@@ -1,7 +1,5 @@
 import TelegramBot from 'node-telegram-bot-api';
-import { tokenBot } from './secret'
-
-
+import tokenBot from './secret.js'
 
 const bot = new TelegramBot(tokenBot, { polling: true })
 const chats = {}
